@@ -50,4 +50,4 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
         break
       whitespace_to_eat += 1
 
-    return view.find('\s*', point - whitespace_to_eat)
+    return view.find(' *', point - whitespace_to_eat)
