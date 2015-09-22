@@ -9,15 +9,13 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
     for selection in selections:
       line_upto_cursor = view.substr(
           sublime.Region(view.line(selection).a, selection.b))
-      column = self.find_last_unmatched_open_paren(line_upto_cursor)
+      param_column = self.find_last_unmatched_open_paren(line_upto_cursor)
       whitespace_region = self.expand_to_whitespace(selection.a)
       view.erase(edit, whitespace_region)
-      if column:
-        view.insert(edit, whitespace_region.a, '\n%s' % (' ' * column))
+      if param_column:
+        view.insert(edit, whitespace_region.a, '\n%s' % (' ' * param_column))
       else:
-        # Would be better to run built in 'insert' command as it does some
-        # heuristics, but that would trigger for all selections so can't do.
-        view.insert(edit, whitespace_region.a, '\n')
+        view.run_command('insert', {'characters': '\n'})
 
   def find_last_unmatched_open_paren(self, line):
     '''Returns offset of the last unmatched opening parenthesis on the line'''
