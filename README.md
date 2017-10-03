@@ -24,7 +24,7 @@ Why is it better than built-in functionality?
 For example, with code like this:
 
 ```
-    function(arg1, arg2) {}
+function(arg1, arg2) {}
 ```
 
 when wanting to break the arguments into two lines (because line is too long, for example), one would put the caret after the comma and press enter.
@@ -32,15 +32,15 @@ when wanting to break the arguments into two lines (because line is too long, fo
 Built-in functionality would break them incorrectly, leaving this result:
 
 ```
-    function(arg1,
-     arg2) {}
+function(arg1,
+ arg2) {}
 ```
 
 while this package will align it correctly:
 
 ```
-    function(arg1,
-             arg2) {}
+function(arg1,
+         arg2) {}
 ```
 
 Built-in functionality aligns code properly when placing cursor after the space (that follows the comma), but then it leaves trailing space on the line. This package handles both cases properly.
