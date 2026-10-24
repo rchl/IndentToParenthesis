@@ -18,7 +18,7 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
         view.run_command('insert', {'characters': '\n'})
 
   def find_last_unmatched_open_paren(self, line):
-    '''Returns offset of the last unmatched opening parenthesis on the line'''
+    """Return offset of the last unmatched opening parenthesis on the line."""
     line_length = len(line)
     closing_paren = 0
     while line_length > 0:
@@ -36,7 +36,7 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
     return None
 
   def expand_to_whitespace(self, point):
-    '''Returns region with all spaces matched before and after the point'''
+    """Return region with all spaces matched before and after the point."""
     view = self.view
     line = view.line(point)
     before = view.substr(sublime.Region(line.begin(), point))
