@@ -38,14 +38,9 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
   def expand_to_whitespace(self, point):
     '''Returns region with all spaces matched before and after the point'''
     view = self.view
-    line_upto_point = view.substr(sublime.Region(view.line(point).begin(), point))
-    whitespace_to_eat = 0
-    last_non_ws_index = len(line_upto_point)
-    while last_non_ws_index > 0:
-      last_non_ws_index -= 1
-      char = line_upto_point[last_non_ws_index]
-      if char != ' ':
-        break
-      whitespace_to_eat += 1
-
-    return view.find(' *', point - whitespace_to_eat)
+    line = view.line(point)
+    before = view.substr(sublime.Region(line.begin(), point))
+    after = view.substr(sublime.Region(point, line.end()))
+    start = line.begin() + len(before.rstrip(' '))
+    end = line.end() - len(after.lstrip(' '))
+    return sublime.Region(start, end)
