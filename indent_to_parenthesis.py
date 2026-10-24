@@ -5,14 +5,15 @@ import sublime_plugin
 class IndentToParenthesisCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     view = self.view
-    selections = view.sel()
-    for selection in selections:
-      line_upto_cursor = view.substr(sublime.Region(view.line(selection).a, selection.b))
+    for selection in view.sel():
+      view.erase(edit, selection)
+    for selection in view.sel():
+      line_upto_cursor = view.substr(sublime.Region(view.line(selection).begin(), selection.end()))
       param_column = self.find_last_unmatched_open_paren(line_upto_cursor)
-      whitespace_region = self.expand_to_whitespace(selection.a)
+      whitespace_region = self.expand_to_whitespace(selection.begin())
       view.erase(edit, whitespace_region)
       if param_column:
-        view.insert(edit, whitespace_region.a, '\n%s' % (' ' * param_column))
+        view.insert(edit, whitespace_region.begin(), '\n%s' % (' ' * param_column))
       else:
         view.run_command('insert', {'characters': '\n'})
 
@@ -37,7 +38,7 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
   def expand_to_whitespace(self, point):
     '''Returns region with all spaces matched before and after the point'''
     view = self.view
-    line_upto_point = view.substr(sublime.Region(view.line(point).a, point))
+    line_upto_point = view.substr(sublime.Region(view.line(point).begin(), point))
     whitespace_to_eat = 0
     last_non_ws_index = len(line_upto_point)
     while last_non_ws_index > 0:
