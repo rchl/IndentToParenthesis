@@ -8,8 +8,8 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
     for selection in view.sel():
       view.erase(edit, selection)
     for selection in view.sel():
-      line_upto_cursor = view.substr(sublime.Region(view.line(selection).begin(), selection.end()))
-      param_column = self.find_last_unmatched_open_paren(line_upto_cursor)
+      line_region_upto_cursor = sublime.Region(view.line(selection).begin(), selection.end())
+      param_column = self.find_last_unmatched_open_paren(line_region_upto_cursor)
       whitespace_region = self.expand_to_whitespace(selection.begin())
       view.erase(edit, whitespace_region)
       if param_column is not None:
@@ -17,13 +17,26 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
       else:
         view.run_command('insert', {'characters': '\n'})
 
-  def find_last_unmatched_open_paren(self, line):
-    """Return offset of the last unmatched opening parenthesis on the line."""
+  def find_last_unmatched_open_paren(self, region):
+    """Return offset of the last unmatched opening parenthesis in the region.
+
+    Parentheses in strings and comments are ignored, except in the string or
+    comment that the end of the region (the cursor) is in.
+    """
+    view = self.view
+    line = view.substr(region)
+    ignored_selector = 'string, comment'
+    in_cursor_token = view.match_selector(region.end(), ignored_selector)
     line_length = len(line)
     closing_paren = 0
     while line_length > 0:
       line_length -= 1
       char = line[line_length]
+      point = region.begin() + line_length
+      if not view.match_selector(point, ignored_selector):
+        in_cursor_token = False
+      elif not in_cursor_token:
+        continue
       if char == ')':
         closing_paren += 1
       elif char == '(':
