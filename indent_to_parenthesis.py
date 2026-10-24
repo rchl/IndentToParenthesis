@@ -7,8 +7,7 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
     view = self.view
     selections = view.sel()
     for selection in selections:
-      line_upto_cursor = view.substr(
-          sublime.Region(view.line(selection).a, selection.b))
+      line_upto_cursor = view.substr(sublime.Region(view.line(selection).a, selection.b))
       param_column = self.find_last_unmatched_open_paren(line_upto_cursor)
       whitespace_region = self.expand_to_whitespace(selection.a)
       view.erase(edit, whitespace_region)
@@ -24,9 +23,9 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
     while line_length > 0:
       line_length -= 1
       char = line[line_length]
-      if char is ')':
+      if char == ')':
         closing_paren += 1
-      elif char is '(':
+      elif char == '(':
         if closing_paren > 0:
           closing_paren -= 1
         else:
