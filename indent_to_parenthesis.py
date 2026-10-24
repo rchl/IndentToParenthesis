@@ -12,7 +12,7 @@ class IndentToParenthesisCommand(sublime_plugin.TextCommand):
       param_column = self.find_last_unmatched_open_paren(line_upto_cursor)
       whitespace_region = self.expand_to_whitespace(selection.begin())
       view.erase(edit, whitespace_region)
-      if param_column:
+      if param_column is not None:
         view.insert(edit, whitespace_region.begin(), '\n%s' % (' ' * param_column))
       else:
         view.run_command('insert', {'characters': '\n'})
